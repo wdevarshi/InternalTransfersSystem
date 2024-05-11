@@ -20,6 +20,22 @@ func New() Validator {
 	return &validator{}
 }
 
+func (v *validator) ValidateTransactionSubmissionRequest(request *proto.TransactionSubmissionRequest) error {
+	if request == nil {
+		return ErrInvalidRequest
+	}
+	if request.GetFromAccountId() == "" {
+		return ErrAccountMissing
+	}
+	if request.GetToAccountId() == "" {
+		return ErrAccountMissing
+	}
+	if request.GetAmount() < 0 {
+		return ErrNegativeBalance
+	}
+	return nil
+}
+
 func (v *validator) ValidateGetAccountRequest(request *proto.GetAccountRequest) error {
 	if request == nil {
 		return ErrInvalidRequest

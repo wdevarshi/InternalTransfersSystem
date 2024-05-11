@@ -44,6 +44,14 @@ message GetAccountResponse{
   double balance = 2;
 }
 
+message TransactionSubmissionRequest{
+  string from_account_id = 1;
+  string to_account_id = 2;
+  double amount = 3;
+}
+message TransactionSubmissionResponse{
+}
+
 service InternalTransfersSystem {
   //LivenessProbe for the service
   rpc HealthCheck(google.protobuf.Empty) returns (google.api.HttpBody) {
@@ -104,6 +112,17 @@ service InternalTransfersSystem {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Get Account endpoint"
       description: "This endpoint is used to get account details."
+    };
+  }
+
+  rpc TransactionSubmission(TransactionSubmissionRequest) returns (TransactionSubmissionResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/transaction/create"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create Transaction endpoint"
+      description: "This endpoint is used to create a transaction. This will be a synchronous call and ensures consistency."
     };
   }
 }

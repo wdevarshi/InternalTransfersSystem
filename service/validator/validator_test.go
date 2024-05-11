@@ -83,3 +83,37 @@ func TestValidateGetAccountRequest(t *testing.T) {
 		t.Errorf("Expected no error, got: %v", err)
 	}
 }
+
+func TestValidateTransactionSubmissionRequest(t *testing.T) {
+	v := &validator{}
+
+	// Test case: nil request
+	err := v.ValidateTransactionSubmissionRequest(nil)
+	if err != ErrInvalidRequest {
+		t.Errorf("Expected error: %v, got: %v", ErrInvalidRequest, err)
+	}
+
+	// Test case: missing from account ID
+	err = v.ValidateTransactionSubmissionRequest(&proto.TransactionSubmissionRequest{})
+	if err != ErrAccountMissing {
+		t.Errorf("Expected error: %v, got: %v", ErrAccountMissing, err)
+	}
+
+	// Test case: missing to account ID
+	err = v.ValidateTransactionSubmissionRequest(&proto.TransactionSubmissionRequest{FromAccountId: "from"})
+	if err != ErrAccountMissing {
+		t.Errorf("Expected error: %v, got: %v", ErrAccountMissing, err)
+	}
+
+	// Test case: negative amount
+	err = v.ValidateTransactionSubmissionRequest(&proto.TransactionSubmissionRequest{FromAccountId: "from", ToAccountId: "to", Amount: -100})
+	if err != ErrNegativeBalance {
+		t.Errorf("Expected error: %v, got: %v", ErrNegativeBalance, err)
+	}
+
+	// Test case: valid request
+	err = v.ValidateTransactionSubmissionRequest(&proto.TransactionSubmissionRequest{FromAccountId: "from", ToAccountId: "to", Amount: 100})
+	if err != nil {
+		t.Errorf("Expected no error, got: %v", err)
+	}
+}

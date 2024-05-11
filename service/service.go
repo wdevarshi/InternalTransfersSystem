@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 	"github.com/go-coldbrew/errors"
+	"github.com/go-coldbrew/errors/notifier"
 	"github.com/go-coldbrew/log"
+	"github.com/google/uuid"
 	"github.com/wdevarshi/InternalTransfersSystem/config"
 	"github.com/wdevarshi/InternalTransfersSystem/database"
 	proto "github.com/wdevarshi/InternalTransfersSystem/proto"
@@ -79,6 +81,49 @@ func (s *svc) GetAccount(ctx context.Context, req *proto.GetAccountRequest) (*pr
 		AccountId: account.ID,
 		Balance:   account.Balance,
 	}, nil
+}
+
+func (s *svc) TransactionSubmission(ctx context.Context, req *proto.TransactionSubmissionRequest) (*proto.TransactionSubmissionResponse, error) {
+	fmt.Println(req.GetFromAccountId())
+	fmt.Println(req.GetToAccountId())
+	fmt.Println(req.GetAmount())
+	fmt.Println("--------------------")
+
+	err := s.validator.ValidateTransactionSubmissionRequest(req)
+	if err != nil {
+		return nil, err
+	}
+	trx := &database.Transaction{
+		ID:                   uuid.New().String(),
+		SourceAccountID:      req.GetFromAccountId(),
+		DestinationAccountID: req.GetToAccountId(),
+		Amount:               req.GetAmount(),
+		Status:               database.TransactionStatusInit,
+		TimeCreated:          time.Now(),
+		LastModified:         time.Now(),
+		Version:              database.INIT_Version,
+	}
+	//check if there is enough balance in the source account
+	sourceAccount, err := s.store.GetAccount(ctx, req.GetFromAccountId())
+	if err != nil {
+		return nil, err
+	}
+	if sourceAccount.Balance < req.GetAmount() {
+		//if not update the status of the transaction to failed and return the error
+		trx.Status = database.TransactionStatusFailed
+		trx.ErrorReason = database.ErrorReason_InsufficientBalance
+		err = s.store.AddTransaction(ctx, trx)
+		if err != nil {
+			//This should not happen, but if it does, raise an alert from pager
+			notifier.Notify(err)
+			return nil, err
+		}
+		return nil, errors.New(database.ErrorReason_InsufficientBalance)
+	}
+	//if there is enough balance, create a transaction record
+	//update the balance of the source and destination accounts
+	//update the status of the transaction to success
+	return &proto.TransactionSubmissionResponse{}, nil
 }
 
 // Error returns an error to the client

@@ -41,7 +41,8 @@ func (s *Store) UpdateAccountWithTrx(ctx context.Context, account *database.Acco
 }
 
 func (s *Store) AddTransaction(ctx context.Context, transaction *database.Transaction) error {
-	_, err := s.DB.Exec("INSERT INTO trx_ledger (id, source_account_id, destination_account_id, amount, status, time_created, last_modified) VALUES ($1, $2, $3, $4, $5, $6, $7)", transaction.ID, transaction.SourceAccountID, transaction.DestinationAccountID, transaction.Amount, transaction.Status, transaction.TimeCreated, transaction.LastModified)
+
+	_, err := s.DB.Exec("INSERT INTO trx_ledger (id, source_account_id, destination_account_id, amount, status, time_created, last_modified, version, error_reason) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)", transaction.ID, transaction.SourceAccountID, transaction.DestinationAccountID, transaction.Amount, transaction.Status, transaction.TimeCreated, transaction.LastModified, transaction.Version, transaction.ErrorReason)
 	if err != nil {
 		return err
 	}

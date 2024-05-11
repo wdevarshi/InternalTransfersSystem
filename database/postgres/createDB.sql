@@ -26,7 +26,9 @@ CREATE TABLE "trx_ledger"
     "amount"                 DOUBLE PRECISION         NOT NULL,
     "status"                 trx_status               NOT NULL,
     "time_created"           timestamp with time zone NOT NULL,
-    "last_modified"          timestamp with time zone NOT NULL
+    "last_modified"          timestamp with time zone NOT NULL,
+    "version"                integer                  NOT NULL,
+    "error_reason"           text
 );
 
 CREATE INDEX "source_account_idx" on "trx_ledger" ("source_account_id");
