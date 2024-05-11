@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"github.com/wdevarshi/InternalTransfersSystem/database/postgres"
+	"github.com/wdevarshi/InternalTransfersSystem/service/validator"
 	"mime"
 	"net/http"
 
@@ -55,17 +56,20 @@ func (s *cbSvc) InitHTTP(ctx context.Context, mux *runtime.ServeMux, endpoint st
 // If you are using the grpc-gateway, you can use the RegisterMySvcHandlerFromEndpoint function to register the HTTP handlers
 func (s *cbSvc) InitGRPC(ctx context.Context, server *grpc.Server) error {
 
-	db, err := sql.Open("postgres", config.Get().DBConn)
+	dataSourceName := "user=" + config.Get().DBUser + " password=" + config.Get().DBPassword + " dbname=" + config.Get().DBName + " sslmode=disable"
+	db, err := sql.Open("postgres", dataSourceName)
+
 	if err != nil {
 		panic(err)
 	}
-	//if err = db.Ping(); err != nil {
-	//	panic(err)
-	//}
-	//log.Info(ctx, "The database is connected")
+	if err = db.Ping(); err != nil {
+		panic(err)
+	}
+	log.Info(ctx, "The database is connected")
 
 	postgresStore := postgres.NewStore(db)
-	impl, err := service.New(config.Get(), postgresStore)
+	validator := validator.New()
+	impl, err := service.New(config.Get(), postgresStore, validator)
 	if err != nil {
 		panic(err)
 	}

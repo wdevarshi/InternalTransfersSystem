@@ -8,9 +8,11 @@ import (
 	"github.com/wdevarshi/InternalTransfersSystem/config"
 	"github.com/wdevarshi/InternalTransfersSystem/database"
 	proto "github.com/wdevarshi/InternalTransfersSystem/proto"
+	"github.com/wdevarshi/InternalTransfersSystem/service/validator"
 	"google.golang.org/genproto/googleapis/api/httpbody"
 	"google.golang.org/grpc/health"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"time"
 )
 
 // svc should implement the service interface defined in the proto file
@@ -22,8 +24,9 @@ type svc struct {
 	*health.Server
 	// TODO: remove this, since this is just to demonstrate how to use config
 	// prefix to be added to the message in the response
-	prefix string
-	store  database.InternalTransferSystemStore
+	prefix    string
+	store     database.InternalTransferSystemStore
+	validator validator.Validator
 }
 
 // ReadinessProbe for the service
@@ -47,7 +50,26 @@ func (s *svc) Echo(_ context.Context, req *proto.EchoRequest) (*proto.EchoRespon
 }
 
 func (s *svc) CreateAccount(ctx context.Context, req *proto.CreateAccountRequest) (*proto.CreateAccountResponse, error) {
-	s.store.CreateAccount(ctx, &database.Account{})
+	fmt.Println("-0---------------")
+	fmt.Println(req)
+	fmt.Println(s.validator)
+	err := s.validator.ValidateCreateAccountRequest(req)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(err)
+	fmt.Println("-1---------------")
+	err = s.store.CreateAccount(ctx, &database.Account{
+		ID:           req.GetAccountId(),
+		Balance:      req.GetInitialBalance(),
+		TimeCreated:  time.Now(),
+		LastModified: time.Now(),
+	})
+	fmt.Println(err)
+	fmt.Println("-2---------------")
+	if err != nil {
+		return nil, err
+	}
 	return &proto.CreateAccountResponse{}, nil
 }
 
@@ -60,14 +82,15 @@ func (s *svc) Error(ctx context.Context, req *proto.EchoRequest) (*proto.EchoRes
 }
 
 // Creates a new Service instance and returns it
-func New(cfg config.Config, store database.InternalTransferSystemStore) (*svc, error) {
+func New(cfg config.Config, store database.InternalTransferSystemStore, validator validator.Validator) (*svc, error) {
 	// TODO: Application should validate the config here and return an error if it is invalid or missing
 	s := &svc{
 		// This is the health server for the service that is used for grpc
 		Server: GetHealthCheckServer(),
 		// TODO: remove this, since this is just to demonstrate how to use config
-		prefix: cfg.Prefix,
-		store:  store,
+		prefix:    cfg.Prefix,
+		store:     store,
+		validator: validator,
 	}
 	// TODO: Application should initialize the service here and return an error if it fails to initialize
 

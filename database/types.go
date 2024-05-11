@@ -1,6 +1,9 @@
 package database
 
-import "context"
+import (
+	"context"
+	"time"
+)
 
 type InternalTransferSystemStore interface {
 	CreateAccount(ctx context.Context, account *Account) error
@@ -12,19 +15,20 @@ type InternalTransferSystemStore interface {
 	Close() error
 }
 
-//CREATE TABLE "account"
-//(
-//"id"            uuid                     NOT NULL PRIMARY KEY,
-//"balance"       varchar(50)              NOT NULL,
-//"time_created"  timestamp with time zone NOT NULL,
-//"last_modified" timestamp with time zone NOT NULL
-//);
-
+// CREATE TABLE "account"
+// (
+// "id"            uuid                     NOT NULL PRIMARY KEY,
+// "balance"       DOUBLE PRECISION         NOT NULL,
+// "time_created"  timestamp with time zone NOT NULL,
+// "last_modified" timestamp with time zone NOT NULL,
+// "version"       integer                  NOT NULL
+// );
 type Account struct {
-	ID           string `json:"id"`
-	Balance      string `json:"balance"`
-	TimeCreated  string `json:"time_created"`
-	LastModified string `json:"last_modified"`
+	ID           string    `json:"id"`
+	Balance      float64   `json:"balance"`
+	TimeCreated  time.Time `json:"time_created"`
+	LastModified time.Time `json:"last_modified"`
+	Version      int       `json:"version"`
 }
 
 // create type trx_status as enum (
@@ -43,11 +47,11 @@ type Account struct {
 // "last_modified"          timestamp with time zone NOT NULL
 // );
 type Transaction struct {
-	ID                   string  `json:"id"`
-	SourceAccountID      string  `json:"source_account_id"`
-	DestinationAccountID string  `json:"destination_account_id"`
-	Amount               float64 `json:"amount"`
-	Status               string  `json:"status"`
-	TimeCreated          string  `json:"time_created"`
-	LastModified         string  `json:"last_modified"`
+	ID                   string    `json:"id"`
+	SourceAccountID      string    `json:"source_account_id"`
+	DestinationAccountID string    `json:"destination_account_id"`
+	Amount               float64   `json:"amount"`
+	Status               string    `json:"status"`
+	TimeCreated          time.Time `json:"time_created"`
+	LastModified         time.Time `json:"last_modified"`
 }

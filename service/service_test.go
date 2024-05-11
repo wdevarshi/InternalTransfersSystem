@@ -10,13 +10,13 @@ import (
 )
 
 func TestNew(t *testing.T) {
-	s, err := New(config.Get(), nil)
+	s, err := New(config.Get(), nil, nil)
 	assert.NoError(t, err)
 	assert.NotNil(t, s)
 }
 
 func TestReadyCheck(t *testing.T) {
-	s, err := New(config.Get(), nil)
+	s, err := New(config.Get(), nil, nil)
 	assert.NoError(t, err)
 	assert.NotNil(t, s)
 
@@ -33,7 +33,7 @@ func TestReadyCheck(t *testing.T) {
 }
 
 func TestHealthCheck(t *testing.T) {
-	s, err := New(config.Get(), nil)
+	s, err := New(config.Get(), nil, nil)
 	assert.NoError(t, err)
 	assert.NotNil(t, s)
 
@@ -47,7 +47,7 @@ func TestEcho(t *testing.T) {
 	const prefix = "testPrefix"
 	const msg = "hello"
 
-	s, err := New(config.Get(), nil)
+	s, err := New(config.Get(), nil, nil)
 	assert.NoError(t, err)
 	assert.NotNil(t, s)
 
@@ -61,7 +61,7 @@ func TestEcho(t *testing.T) {
 }
 
 func TestError(t *testing.T) {
-	s, err := New(config.Get(), nil)
+	s, err := New(config.Get(), nil, nil)
 	assert.NoError(t, err)
 	assert.NotNil(t, s)
 
@@ -78,7 +78,7 @@ func BenchmarkEcho(b *testing.B) {
 
 	cfg := config.Get()
 	cfg.Prefix = prefix
-	s, err := New(cfg, nil)
+	s, err := New(cfg, nil, nil)
 	assert.NoError(b, err)
 	assert.NotNil(b, s)
 

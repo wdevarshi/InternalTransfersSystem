@@ -6,9 +6,10 @@ DATABASE internaltransferssystem;
 CREATE TABLE "account"
 (
     "id"            uuid                     NOT NULL PRIMARY KEY,
-    "balance"       varchar(50)              NOT NULL,
+    "balance"       DOUBLE PRECISION         NOT NULL,
     "time_created"  timestamp with time zone NOT NULL,
-    "last_modified" timestamp with time zone NOT NULL
+    "last_modified" timestamp with time zone NOT NULL,
+    "version"       integer                  NOT NULL
 );
 
 create type trx_status as enum (

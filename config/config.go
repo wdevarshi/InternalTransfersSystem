@@ -17,8 +17,10 @@ type Config struct {
 	PanicOnConfigError bool `envconfig:"PANIC_ON_CONFIG_ERROR" default:"true"`
 	// App configuration
 	// Remove this line and add your own configuration
-	Prefix string `envconfig:"PREFIX" default:"got"`
-	DBConn string `envconfig:"DBConn" default:" jdbc:postgresql://localhost:5432/internaltransferssystem"`
+	Prefix     string `envconfig:"PREFIX" default:"got"`
+	DBUser     string `envconfig:"DBUser" default:"devarshiwaghela"`
+	DBPassword string `envconfig:"DBPassword" default:"waghela"`
+	DBName     string `envconfig:"DBName" default:"internaltransferssystem"`
 }
 
 func init() {
