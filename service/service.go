@@ -128,6 +128,12 @@ func (s *svc) TransactionSubmission(ctx context.Context, req *proto.TransactionS
 	}
 
 	//update the balance of the source and destination accounts
+	sourceAccount.Balance -= req.GetAmount()
+	sourceAccount.LastModified = time.Now()
+	destinationAccount.Balance += req.GetAmount()
+	destinationAccount.LastModified = time.Now()
+	fmt.Println("sourceAccount", sourceAccount)
+	fmt.Println("destinationAccount", destinationAccount)
 	err = s.store.UpdateAccountWithTrx(ctx, sourceAccount, destinationAccount)
 	if err != nil {
 		return nil, err
