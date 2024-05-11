@@ -2,7 +2,7 @@ package database
 
 import "context"
 
-type Store interface {
+type InternalTransferSystemStore interface {
 	CreateAccount(ctx context.Context, account *Account) error
 	GetAccount(ctx context.Context, accountID string) (*Account, error)
 	UpdateAccount(ctx context.Context, account *Account) error

@@ -29,19 +29,26 @@ message EchoResponse{
   string msg = 1;
 }
 
+message CreateAccountRequest{
+  string account_id = 1;
+  double initial_balance = 2;
+}
+message CreateAccountResponse{
+}
+
 service InternalTransfersSystem {
   //LivenessProbe for the service
   rpc HealthCheck(google.protobuf.Empty) returns (google.api.HttpBody) {
-      option (google.api.http) = {
-          get: "/healthcheck"
-      };
+    option (google.api.http) = {
+      get: "/healthcheck"
+    };
   }
 
   //ReadinessProbe for the service
   rpc ReadyCheck(google.protobuf.Empty) returns (google.api.HttpBody) {
-      option (google.api.http) = {
-          get: "/readycheck"
-      };
+    option (google.api.http) = {
+      get: "/readycheck"
+    };
   }
 
 
@@ -66,6 +73,17 @@ service InternalTransfersSystem {
       summary: "Error endpoint"
       description: "Request made to this endpoint result in errors."
       tags: "error"
+    };
+  }
+
+  rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/account/create"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Create Account endpoint with initial balance"
+      description: "This endpoint is used to create an account with an initial balance."
     };
   }
 }

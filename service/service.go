@@ -3,11 +3,10 @@ package service
 import (
 	"context"
 	"fmt"
-	"github.com/wdevarshi/InternalTransfersSystem/database/postgres"
-
 	"github.com/go-coldbrew/errors"
 	"github.com/go-coldbrew/log"
 	"github.com/wdevarshi/InternalTransfersSystem/config"
+	"github.com/wdevarshi/InternalTransfersSystem/database"
 	proto "github.com/wdevarshi/InternalTransfersSystem/proto"
 	"google.golang.org/genproto/googleapis/api/httpbody"
 	"google.golang.org/grpc/health"
@@ -24,6 +23,7 @@ type svc struct {
 	// TODO: remove this, since this is just to demonstrate how to use config
 	// prefix to be added to the message in the response
 	prefix string
+	store  database.InternalTransferSystemStore
 }
 
 // ReadinessProbe for the service
@@ -46,6 +46,11 @@ func (s *svc) Echo(_ context.Context, req *proto.EchoRequest) (*proto.EchoRespon
 	}, nil
 }
 
+func (s *svc) CreateAccount(ctx context.Context, req *proto.CreateAccountRequest) (*proto.CreateAccountResponse, error) {
+	s.store.CreateAccount(ctx, &database.Account{})
+	return &proto.CreateAccountResponse{}, nil
+}
+
 // Error returns an error to the client
 // TODO: remove this, since this is just to demonstrate how to use endpoints and config
 func (s *svc) Error(ctx context.Context, req *proto.EchoRequest) (*proto.EchoResponse, error) {
@@ -55,13 +60,14 @@ func (s *svc) Error(ctx context.Context, req *proto.EchoRequest) (*proto.EchoRes
 }
 
 // Creates a new Service instance and returns it
-func New(cfg config.Config, store *postgres.Store) (*svc, error) {
+func New(cfg config.Config, store database.InternalTransferSystemStore) (*svc, error) {
 	// TODO: Application should validate the config here and return an error if it is invalid or missing
 	s := &svc{
 		// This is the health server for the service that is used for grpc
 		Server: GetHealthCheckServer(),
 		// TODO: remove this, since this is just to demonstrate how to use config
 		prefix: cfg.Prefix,
+		store:  store,
 	}
 	// TODO: Application should initialize the service here and return an error if it fails to initialize
 

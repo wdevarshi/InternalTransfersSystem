@@ -10,15 +10,15 @@ import (
 	"github.com/go-coldbrew/core"
 	"github.com/go-coldbrew/log"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	_ "github.com/lib/pq"
 	"github.com/rakyll/statik/fs"
 	"github.com/wdevarshi/InternalTransfersSystem/config"
 	internaltransferssystem "github.com/wdevarshi/InternalTransfersSystem/proto"
 	"github.com/wdevarshi/InternalTransfersSystem/service"
+	_ "github.com/wdevarshi/InternalTransfersSystem/statik"
 	"github.com/wdevarshi/InternalTransfersSystem/version"
 	"google.golang.org/grpc"
 	healthgrpc "google.golang.org/grpc/health/grpc_health_v1"
-
-	_ "github.com/wdevarshi/InternalTransfersSystem/statik"
 )
 
 // cbSvc is the service implementation of ColdBrew service
@@ -55,16 +55,19 @@ func (s *cbSvc) InitHTTP(ctx context.Context, mux *runtime.ServeMux, endpoint st
 // If you are using the grpc-gateway, you can use the RegisterMySvcHandlerFromEndpoint function to register the HTTP handlers
 func (s *cbSvc) InitGRPC(ctx context.Context, server *grpc.Server) error {
 
-	db, err := sql.Open("pgx", config.Get().DBConn)
+	db, err := sql.Open("postgres", config.Get().DBConn)
 	if err != nil {
-		log.Error(ctx, "Unable to connect to database because %s", err.Error())
+		panic(err)
 	}
+	//if err = db.Ping(); err != nil {
+	//	panic(err)
+	//}
+	//log.Info(ctx, "The database is connected")
 
 	postgresStore := postgres.NewStore(db)
-	// Create the service implementation
 	impl, err := service.New(config.Get(), postgresStore)
 	if err != nil {
-		return err
+		panic(err)
 	}
 	// Register the service implementation with the gRPC server
 	internaltransferssystem.RegisterInternalTransfersSystemServer(server, impl)

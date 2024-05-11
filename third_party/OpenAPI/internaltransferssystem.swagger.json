@@ -20,6 +20,40 @@
     "application/json"
   ],
   "paths": {
+    "/api/v1/account/create": {
+      "post": {
+        "summary": "Create Account endpoint with initial balance",
+        "description": "This endpoint is used to create an account with an initial balance.",
+        "operationId": "InternalTransfersSystem_CreateAccount",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/wdevarshiCreateAccountResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/wdevarshiCreateAccountRequest"
+            }
+          }
+        ],
+        "tags": [
+          "InternalTransfersSystem"
+        ]
+      }
+    },
     "/api/v1/example/echo": {
       "post": {
         "summary": "Echo endpoint",
@@ -188,6 +222,21 @@
           }
         }
       }
+    },
+    "wdevarshiCreateAccountRequest": {
+      "type": "object",
+      "properties": {
+        "accountId": {
+          "type": "string"
+        },
+        "initialBalance": {
+          "type": "number",
+          "format": "double"
+        }
+      }
+    },
+    "wdevarshiCreateAccountResponse": {
+      "type": "object"
     },
     "wdevarshiEchoRequest": {
       "type": "object",
