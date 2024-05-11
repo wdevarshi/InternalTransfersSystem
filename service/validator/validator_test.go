@@ -61,3 +61,25 @@ func TestValidateCreateAccountRequest(t *testing.T) {
 		t.Errorf("Expected no error, got: %v", err)
 	}
 }
+
+func TestValidateGetAccountRequest(t *testing.T) {
+	v := &validator{}
+
+	// Test case: nil request
+	err := v.ValidateGetAccountRequest(nil)
+	if err != ErrInvalidRequest {
+		t.Errorf("Expected error: %v, got: %v", ErrInvalidRequest, err)
+	}
+
+	// Test case: missing account ID
+	err = v.ValidateGetAccountRequest(&proto.GetAccountRequest{})
+	if err != ErrAccountMissing {
+		t.Errorf("Expected error: %v, got: %v", ErrAccountMissing, err)
+	}
+
+	// Test case: valid request
+	err = v.ValidateGetAccountRequest(&proto.GetAccountRequest{AccountId: "test"})
+	if err != nil {
+		t.Errorf("Expected no error, got: %v", err)
+	}
+}

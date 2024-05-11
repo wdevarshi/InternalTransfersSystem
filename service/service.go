@@ -66,6 +66,21 @@ func (s *svc) CreateAccount(ctx context.Context, req *proto.CreateAccountRequest
 	return &proto.CreateAccountResponse{}, nil
 }
 
+func (s *svc) GetAccount(ctx context.Context, req *proto.GetAccountRequest) (*proto.GetAccountResponse, error) {
+	err := s.validator.ValidateGetAccountRequest(req)
+	if err != nil {
+		return nil, err
+	}
+	account, err := s.store.GetAccount(ctx, req.GetAccountId())
+	if err != nil {
+		return nil, err
+	}
+	return &proto.GetAccountResponse{
+		AccountId: account.ID,
+		Balance:   account.Balance,
+	}, nil
+}
+
 // Error returns an error to the client
 // TODO: remove this, since this is just to demonstrate how to use endpoints and config
 func (s *svc) Error(ctx context.Context, req *proto.EchoRequest) (*proto.EchoResponse, error) {

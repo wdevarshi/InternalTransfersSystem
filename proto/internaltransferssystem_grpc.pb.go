@@ -27,6 +27,7 @@ type InternalTransfersSystemClient interface {
 	Echo(ctx context.Context, in *EchoRequest, opts ...grpc.CallOption) (*EchoResponse, error)
 	Error(ctx context.Context, in *EchoRequest, opts ...grpc.CallOption) (*EchoResponse, error)
 	CreateAccount(ctx context.Context, in *CreateAccountRequest, opts ...grpc.CallOption) (*CreateAccountResponse, error)
+	GetAccount(ctx context.Context, in *GetAccountRequest, opts ...grpc.CallOption) (*GetAccountResponse, error)
 }
 
 type internalTransfersSystemClient struct {
@@ -82,6 +83,15 @@ func (c *internalTransfersSystemClient) CreateAccount(ctx context.Context, in *C
 	return out, nil
 }
 
+func (c *internalTransfersSystemClient) GetAccount(ctx context.Context, in *GetAccountRequest, opts ...grpc.CallOption) (*GetAccountResponse, error) {
+	out := new(GetAccountResponse)
+	err := c.cc.Invoke(ctx, "/ggithub.com.wdevarshi.InternalTransfersSystem/GetAccount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // InternalTransfersSystemServer is the server API for InternalTransfersSystem service.
 // All implementations should embed UnimplementedInternalTransfersSystemServer
 // for forward compatibility
@@ -93,6 +103,7 @@ type InternalTransfersSystemServer interface {
 	Echo(context.Context, *EchoRequest) (*EchoResponse, error)
 	Error(context.Context, *EchoRequest) (*EchoResponse, error)
 	CreateAccount(context.Context, *CreateAccountRequest) (*CreateAccountResponse, error)
+	GetAccount(context.Context, *GetAccountRequest) (*GetAccountResponse, error)
 }
 
 // UnimplementedInternalTransfersSystemServer should be embedded to have forward compatible implementations.
@@ -113,6 +124,9 @@ func (UnimplementedInternalTransfersSystemServer) Error(context.Context, *EchoRe
 }
 func (UnimplementedInternalTransfersSystemServer) CreateAccount(context.Context, *CreateAccountRequest) (*CreateAccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateAccount not implemented")
+}
+func (UnimplementedInternalTransfersSystemServer) GetAccount(context.Context, *GetAccountRequest) (*GetAccountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAccount not implemented")
 }
 
 // UnsafeInternalTransfersSystemServer may be embedded to opt out of forward compatibility for this service.
@@ -216,6 +230,24 @@ func _InternalTransfersSystem_CreateAccount_Handler(srv interface{}, ctx context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _InternalTransfersSystem_GetAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAccountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(InternalTransfersSystemServer).GetAccount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/ggithub.com.wdevarshi.InternalTransfersSystem/GetAccount",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(InternalTransfersSystemServer).GetAccount(ctx, req.(*GetAccountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // InternalTransfersSystem_ServiceDesc is the grpc.ServiceDesc for InternalTransfersSystem service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -242,6 +274,10 @@ var InternalTransfersSystem_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateAccount",
 			Handler:    _InternalTransfersSystem_CreateAccount_Handler,
+		},
+		{
+			MethodName: "GetAccount",
+			Handler:    _InternalTransfersSystem_GetAccount_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

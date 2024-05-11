@@ -36,6 +36,14 @@ message CreateAccountRequest{
 message CreateAccountResponse{
 }
 
+message GetAccountRequest{
+  string account_id = 1;
+}
+message GetAccountResponse{
+  string account_id = 1;
+  double balance = 2;
+}
+
 service InternalTransfersSystem {
   //LivenessProbe for the service
   rpc HealthCheck(google.protobuf.Empty) returns (google.api.HttpBody) {
@@ -84,6 +92,18 @@ service InternalTransfersSystem {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Create Account endpoint with initial balance"
       description: "This endpoint is used to create an account with an initial balance."
+    };
+  }
+
+
+  rpc GetAccount(GetAccountRequest) returns (GetAccountResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/account/get"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      summary: "Get Account endpoint"
+      description: "This endpoint is used to get account details."
     };
   }
 }

@@ -170,6 +170,40 @@ func local_request_InternalTransfersSystem_CreateAccount_0(ctx context.Context, 
 
 }
 
+func request_InternalTransfersSystem_GetAccount_0(ctx context.Context, marshaler runtime.Marshaler, client InternalTransfersSystemClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetAccountRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.GetAccount(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_InternalTransfersSystem_GetAccount_0(ctx context.Context, marshaler runtime.Marshaler, server InternalTransfersSystemServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetAccountRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := server.GetAccount(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
 // RegisterInternalTransfersSystemHandlerServer registers the http handlers for service InternalTransfersSystem to "mux".
 // UnaryRPC     :call InternalTransfersSystemServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
@@ -298,6 +332,31 @@ func RegisterInternalTransfersSystemHandlerServer(ctx context.Context, mux *runt
 		}
 
 		forward_InternalTransfersSystem_CreateAccount_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_InternalTransfersSystem_GetAccount_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/ggithub.com.wdevarshi.InternalTransfersSystem/GetAccount", runtime.WithHTTPPathPattern("/api/v1/account/get"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_InternalTransfersSystem_GetAccount_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_InternalTransfersSystem_GetAccount_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -452,6 +511,28 @@ func RegisterInternalTransfersSystemHandlerClient(ctx context.Context, mux *runt
 
 	})
 
+	mux.Handle("POST", pattern_InternalTransfersSystem_GetAccount_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/ggithub.com.wdevarshi.InternalTransfersSystem/GetAccount", runtime.WithHTTPPathPattern("/api/v1/account/get"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_InternalTransfersSystem_GetAccount_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_InternalTransfersSystem_GetAccount_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	return nil
 }
 
@@ -465,6 +546,8 @@ var (
 	pattern_InternalTransfersSystem_Error_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "example", "error"}, ""))
 
 	pattern_InternalTransfersSystem_CreateAccount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "account", "create"}, ""))
+
+	pattern_InternalTransfersSystem_GetAccount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "account", "get"}, ""))
 )
 
 var (
@@ -477,4 +560,6 @@ var (
 	forward_InternalTransfersSystem_Error_0 = runtime.ForwardResponseMessage
 
 	forward_InternalTransfersSystem_CreateAccount_0 = runtime.ForwardResponseMessage
+
+	forward_InternalTransfersSystem_GetAccount_0 = runtime.ForwardResponseMessage
 )

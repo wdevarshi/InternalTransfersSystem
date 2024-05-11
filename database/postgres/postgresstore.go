@@ -48,45 +48,6 @@ func (s *Store) AddTransaction(ctx context.Context, transaction *database.Transa
 	return nil
 }
 
-func (s *Store) GetAllSourceTransactions(ctx context.Context, sourceAccountId string) ([]*database.Transaction, error) {
-
-	rows, err := s.DB.Query("SELECT id, source_account_id, destination_account_id, amount, status, time_created, last_modified FROM trx_ledger WHERE source_account_id = $1", sourceAccountId)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var transactions []*database.Transaction
-	for rows.Next() {
-		transaction := &database.Transaction{}
-		err := rows.Scan(&transaction.ID, &transaction.SourceAccountID, &transaction.DestinationAccountID, &transaction.Amount, &transaction.Status, &transaction.TimeCreated, &transaction.LastModified)
-		if err != nil {
-			return nil, err
-		}
-		transactions = append(transactions, transaction)
-	}
-	return transactions, nil
-}
-
-func (s *Store) GetAllDestinationTransactions(ctx context.Context, destinationAccountId string) ([]*database.Transaction, error) {
-	rows, err := s.DB.Query("SELECT id, source_account_id, destination_account_id, amount, status, time_created, last_modified FROM trx_ledger WHERE destination_account_id = $1", destinationAccountId)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var transactions []*database.Transaction
-	for rows.Next() {
-		transaction := &database.Transaction{}
-		err := rows.Scan(&transaction.ID, &transaction.SourceAccountID, &transaction.DestinationAccountID, &transaction.Amount, &transaction.Status, &transaction.TimeCreated, &transaction.LastModified)
-		if err != nil {
-			return nil, err
-		}
-		transactions = append(transactions, transaction)
-	}
-	return transactions, nil
-}
-
 func (s *Store) Close() error {
 	return s.DB.Close()
 }

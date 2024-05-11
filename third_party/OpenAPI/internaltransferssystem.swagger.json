@@ -54,6 +54,40 @@
         ]
       }
     },
+    "/api/v1/account/get": {
+      "post": {
+        "summary": "Get Account endpoint",
+        "description": "This endpoint is used to get account details.",
+        "operationId": "InternalTransfersSystem_GetAccount",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/wdevarshiGetAccountResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/wdevarshiGetAccountRequest"
+            }
+          }
+        ],
+        "tags": [
+          "InternalTransfersSystem"
+        ]
+      }
+    },
     "/api/v1/example/echo": {
       "post": {
         "summary": "Echo endpoint",
@@ -251,6 +285,26 @@
       "properties": {
         "msg": {
           "type": "string"
+        }
+      }
+    },
+    "wdevarshiGetAccountRequest": {
+      "type": "object",
+      "properties": {
+        "accountId": {
+          "type": "string"
+        }
+      }
+    },
+    "wdevarshiGetAccountResponse": {
+      "type": "object",
+      "properties": {
+        "accountId": {
+          "type": "string"
+        },
+        "balance": {
+          "type": "number",
+          "format": "double"
         }
       }
     }

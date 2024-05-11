@@ -20,6 +20,16 @@ func New() Validator {
 	return &validator{}
 }
 
+func (v *validator) ValidateGetAccountRequest(request *proto.GetAccountRequest) error {
+	if request == nil {
+		return ErrInvalidRequest
+	}
+	if request.GetAccountId() == "" {
+		return ErrAccountMissing
+	}
+	return nil
+}
+
 func (v *validator) ValidateCreateAccountRequest(request *proto.CreateAccountRequest) error {
 	if request == nil {
 		return ErrInvalidRequest
