@@ -7,7 +7,7 @@ require (
 	github.com/bufbuild/buf v1.8.0
 	github.com/go-coldbrew/core v0.1.20
 	github.com/go-coldbrew/errors v0.2.1
-	github.com/go-coldbrew/log v0.2.2
+	github.com/go-coldbrew/log v0.2.3
 	github.com/golangci/golangci-lint v1.52.2
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.16.0
 	github.com/kelseyhightower/envconfig v1.4.0
@@ -30,6 +30,7 @@ require (
 	github.com/BurntSushi/toml v1.2.1 // indirect
 	github.com/Djarvur/go-err113 v0.0.0-20210108212216-aea10b59be24 // indirect
 	github.com/GaijinEntertainment/go-exhaustruct/v2 v2.3.0 // indirect
+	github.com/GandalfUK/godoc2ghmd v0.0.0-20170102215518-d78ed169ffe1 // indirect
 	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/Microsoft/go-winio v0.5.2 // indirect
 	github.com/NYTimes/gziphandler v1.1.1 // indirect
@@ -226,6 +227,7 @@ require (
 	github.com/uudashr/gocognit v1.0.6 // indirect
 	github.com/yagipy/maintidx v1.0.0 // indirect
 	github.com/yeya24/promlinter v0.2.0 // indirect
+	github.com/yuin/goldmark v1.4.13 // indirect
 	gitlab.com/bosi/decorder v0.2.3 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.34.0 // indirect

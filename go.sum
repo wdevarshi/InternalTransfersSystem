@@ -416,6 +416,7 @@ github.com/Djarvur/go-err113 v0.0.0-20210108212216-aea10b59be24 h1:sHglBQTwgx+rW
 github.com/Djarvur/go-err113 v0.0.0-20210108212216-aea10b59be24/go.mod h1:4UJr5HIiMZrwgkSPdsjy2uOQExX/WEILpIrO9UPGuXs=
 github.com/GaijinEntertainment/go-exhaustruct/v2 v2.3.0 h1:+r1rSv4gvYn0wmRjC8X7IAzX8QezqtFV9m0MUHFJgts=
 github.com/GaijinEntertainment/go-exhaustruct/v2 v2.3.0/go.mod h1:b3g59n2Y+T5xmcxJL+UEG2f8cQploZm1mR/v6BW0mU0=
+github.com/GandalfUK/godoc2ghmd v0.0.0-20170102215518-d78ed169ffe1 h1:g1/c49W6MT/s9RC/rGM5rkBHbazaOjQO03oSnFjf1DU=
 github.com/GandalfUK/godoc2ghmd v0.0.0-20170102215518-d78ed169ffe1/go.mod h1:3v/ok4AOWXOhxl3juQtxBtKa0IzHRph5kF8eNrIcDCI=
 github.com/HdrHistogram/hdrhistogram-go v1.1.0/go.mod h1:yDgFjdqOqDEKOvasDdhWNXYg9BVp4O+o5f6V/ehm6Oo=
 github.com/HdrHistogram/hdrhistogram-go v1.1.2 h1:5IcZpTvzydCQeHzK4Ef/D5rrSqwxob0t8PQPMybUNFM=
@@ -672,6 +673,8 @@ github.com/go-coldbrew/log v0.1.0/go.mod h1:qIlJAwY07jjjz5bnuMBlG7PUnmibB66uEBvf
 github.com/go-coldbrew/log v0.2.0/go.mod h1:G826qsaI8s4ZGMKk3vv0n2ncLlUN2M2I3XMmsIJO5RQ=
 github.com/go-coldbrew/log v0.2.2 h1:WuOw26vc2THLqvdQVr4oO5tBBuB20P05+BUtfakMsoE=
 github.com/go-coldbrew/log v0.2.2/go.mod h1:T/c+n/lHl3Z7KtuWWStWuc0y8Y0yYMnPDOPSGgwLE5g=
+github.com/go-coldbrew/log v0.2.3 h1:1DowpkPtqOF/HYTuGr2gwJv4jb0XXXIA4J7edlpsk2E=
+github.com/go-coldbrew/log v0.2.3/go.mod h1:T/c+n/lHl3Z7KtuWWStWuc0y8Y0yYMnPDOPSGgwLE5g=
 github.com/go-coldbrew/options v0.0.0-20210109113138-49c7e5781276/go.mod h1:WUs8KmARMBkoNGAuGQRZMYS5aQ1GlkqTmpeBwPz302E=
 github.com/go-coldbrew/options v0.1.0/go.mod h1:34WzkOP6nsxfRwI/MRSesbJqmPcl7K5GEYHp3vSUB6E=
 github.com/go-coldbrew/options v0.2.3 h1:4GYT6ilZ3BYSiz2+yR87vcGgZQP7jQtBz1sc7Zjl3B8=
@@ -1545,6 +1548,7 @@ github.com/yuin/goldmark v1.1.32/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9de
 github.com/yuin/goldmark v1.2.1/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.3.5/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
 github.com/yuin/goldmark v1.4.1/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=
+github.com/yuin/goldmark v1.4.13 h1:fVcFKWvrslecOb/tg+Cc05dkeYx540o0FuFt3nUVDoE=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
 github.com/zenazn/goji v0.9.0/go.mod h1:7S9M489iMyHBNxwZnk9/EHS098H4/F6TATF2mIxtB1Q=
 gitlab.com/bosi/decorder v0.2.3 h1:gX4/RgK16ijY8V+BRQHAySfQAb354T7/xQpDB2n10P0=

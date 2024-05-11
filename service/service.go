@@ -4,13 +4,13 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/wdevarshi/InternalTransfersSystem/config"
-	proto "github.com/wdevarshi/InternalTransfersSystem/proto"
-	"google.golang.org/protobuf/types/known/emptypb"
-	"google.golang.org/genproto/googleapis/api/httpbody"
 	"github.com/go-coldbrew/errors"
 	"github.com/go-coldbrew/log"
+	"github.com/wdevarshi/InternalTransfersSystem/config"
+	proto "github.com/wdevarshi/InternalTransfersSystem/proto"
+	"google.golang.org/genproto/googleapis/api/httpbody"
 	"google.golang.org/grpc/health"
+	"google.golang.org/protobuf/types/known/emptypb"
 )
 
 // svc should implement the service interface defined in the proto file

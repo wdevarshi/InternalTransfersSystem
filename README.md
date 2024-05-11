@@ -46,6 +46,14 @@ To run the image, run:
 ```console
 $ make docker-run
 ```
+## How to create DB
+This project uses postgresql to store data. For the purpose this demo, we are using docker container to run with a mounted volume to persist the data.
+
+```console
+$ docker pull postgres
+$ docker run --name internalTransfersSystem -e POSTGRES_PASSWORD=mysecretpassword -e POSTGRES_USER=internalTransferSystemUser  -p 5433:5432 -d postgres -v pgdata:/var/lib/postgresql/data
+```
+
 
 ## Adding a new endpoint to the API
 
