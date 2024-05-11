@@ -60,6 +60,8 @@ const (
 const (
 	ErrorReason_InsufficientBalance = "insufficient balance"
 	ErrorReason_InternalError       = "internal error"
+	ErrorReason_ToUserNotFound      = "destination account not found"
+	ErrorReason_FromUserNotFound    = "source account not found"
 )
 
 const (

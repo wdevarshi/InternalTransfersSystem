@@ -89,39 +89,37 @@ func (s *svc) TransactionSubmission(ctx context.Context, req *proto.TransactionS
 	if err != nil {
 		return nil, err
 	}
-	trx := &database.Transaction{
-		ID:                   uuid.New().String(),
-		SourceAccountID:      req.GetFromAccountId(),
-		DestinationAccountID: req.GetToAccountId(),
-		Amount:               req.GetAmount(),
-		Status:               database.TransactionStatusInit,
-		TimeCreated:          time.Now(),
-		LastModified:         time.Now(),
-		Version:              database.INIT_Version,
-	}
+	trx := GetTrx(req)
 	//check if there is enough balance in the source account
 	sourceAccount, err := s.store.GetAccount(ctx, req.GetFromAccountId())
 	if err != nil {
+		if sourceAccount == nil {
+			//if source account does not exist, update the status of the transaction to failed and return the error
+			response, err := s.storeTransaction(ctx, trx, database.TransactionStatusFailed, database.ErrorReason_FromUserNotFound)
+			if err != nil {
+				return response, err
+			}
+		}
 		return nil, err
 	}
 	if sourceAccount.Balance < req.GetAmount() {
 		//if not update the status of the transaction to failed and return the error
-		trx.Status = database.TransactionStatusFailed
-		trx.ErrorReason = database.ErrorReason_InsufficientBalance
-		err = s.store.AddTransaction(ctx, trx)
+		response, err := s.storeTransaction(ctx, trx, database.TransactionStatusFailed, database.ErrorReason_InsufficientBalance)
 		if err != nil {
-			//This should not happen, but if it does, raise an alert from pager
-			err := notifier.Notify(err)
-			if err != nil {
-				return nil, err
-			}
-			return nil, err
+			return response, err
 		}
 		return nil, errors.New(database.ErrorReason_InsufficientBalance)
 	}
 	//check if destination account exists
 	destinationAccount, err := s.store.GetAccount(ctx, req.GetToAccountId())
 	if err != nil {
+		if destinationAccount == nil {
+			//if destination account does not exist, update the status of the transaction to failed and return the error
+			response, err := s.storeTransaction(ctx, trx, database.TransactionStatusFailed, database.ErrorReason_ToUserNotFound)
+			if err != nil {
+				return response, err
+			}
+		}
 		return nil, err
 	}
 	//if there is enough balance, INIT the transaction
@@ -135,8 +133,6 @@ func (s *svc) TransactionSubmission(ctx context.Context, req *proto.TransactionS
 	sourceAccount.LastModified = time.Now()
 	destinationAccount.Balance += req.GetAmount()
 	destinationAccount.LastModified = time.Now()
-	fmt.Println("sourceAccount", sourceAccount)
-	fmt.Println("destinationAccount", destinationAccount)
 	err = s.store.UpdateAccountWithTrx(ctx, sourceAccount, destinationAccount)
 	if err != nil {
 		return nil, err
@@ -146,20 +142,42 @@ func (s *svc) TransactionSubmission(ctx context.Context, req *proto.TransactionS
 	trx.Status = database.TransactionStatusSuccess
 	err = s.store.UpdateTransaction(ctx, trx)
 	if err != nil {
-		trx.Status = database.TransactionStatusFailed
-		trx.ErrorReason = database.ErrorReason_InternalError
-		err = s.store.AddTransaction(ctx, trx)
+		response, err := s.storeTransaction(ctx, trx, database.TransactionStatusFailed, database.ErrorReason_InternalError)
 		if err != nil {
-			//This should not happen, but if it does, raise an alert from pager
-			err := notifier.Notify(err)
-			if err != nil {
-				return nil, err
-			}
+			return response, err
+		}
+		return nil, err
+	}
+	return &proto.TransactionSubmissionResponse{}, nil
+}
+
+func (s *svc) storeTransaction(ctx context.Context, trx *database.Transaction, status string, errorReason string) (*proto.TransactionSubmissionResponse, error) {
+	trx.Status = status
+	trx.ErrorReason = errorReason
+	err := s.store.AddTransaction(ctx, trx)
+	if err != nil {
+		//This should not happen, but if it does, raise an alert from pager
+		err := notifier.Notify(err)
+		if err != nil {
 			return nil, err
 		}
 		return nil, err
 	}
 	return &proto.TransactionSubmissionResponse{}, nil
+}
+
+func GetTrx(req *proto.TransactionSubmissionRequest) *database.Transaction {
+	trx := &database.Transaction{
+		ID:                   uuid.New().String(),
+		SourceAccountID:      req.GetFromAccountId(),
+		DestinationAccountID: req.GetToAccountId(),
+		Amount:               req.GetAmount(),
+		Status:               database.TransactionStatusInit,
+		TimeCreated:          time.Now(),
+		LastModified:         time.Now(),
+		Version:              database.INIT_Version,
+	}
+	return trx
 }
 
 // Error returns an error to the client
