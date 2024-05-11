@@ -18,6 +18,7 @@ type Config struct {
 	// App configuration
 	// Remove this line and add your own configuration
 	Prefix string `envconfig:"PREFIX" default:"got"`
+	DBConn string `envconfig:"DBConn" default:" jdbc:postgresql://localhost:5432/internaltransferssystem"`
 }
 
 func init() {

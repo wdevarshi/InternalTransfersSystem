@@ -1,3 +1,4 @@
+-- jdbc:postgresql://localhost:5432/internaltransferssystem
 -- psql postgres
 CREATE
 DATABASE internaltransferssystem;

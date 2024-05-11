@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"github.com/wdevarshi/InternalTransfersSystem/database/postgres"
 
 	"github.com/go-coldbrew/errors"
 	"github.com/go-coldbrew/log"
@@ -54,7 +55,7 @@ func (s *svc) Error(ctx context.Context, req *proto.EchoRequest) (*proto.EchoRes
 }
 
 // Creates a new Service instance and returns it
-func New(cfg config.Config) (*svc, error) {
+func New(cfg config.Config, store *postgres.Store) (*svc, error) {
 	// TODO: Application should validate the config here and return an error if it is invalid or missing
 	s := &svc{
 		// This is the health server for the service that is used for grpc

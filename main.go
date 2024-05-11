@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"database/sql"
+	"github.com/wdevarshi/InternalTransfersSystem/database/postgres"
 	"mime"
 	"net/http"
 
@@ -52,8 +54,15 @@ func (s *cbSvc) InitHTTP(ctx context.Context, mux *runtime.ServeMux, endpoint st
 // This is a good place to register your gRPC handlers if you have any custom handlers that you want to register with the gRPC server
 // If you are using the grpc-gateway, you can use the RegisterMySvcHandlerFromEndpoint function to register the HTTP handlers
 func (s *cbSvc) InitGRPC(ctx context.Context, server *grpc.Server) error {
+
+	db, err := sql.Open("pgx", config.Get().DBConn)
+	if err != nil {
+		log.Error(ctx, "Unable to connect to database because %s", err.Error())
+	}
+
+	postgresStore := postgres.NewStore(db)
 	// Create the service implementation
-	impl, err := service.New(config.Get())
+	impl, err := service.New(config.Get(), postgresStore)
 	if err != nil {
 		return err
 	}
