@@ -44,13 +44,19 @@ func (s *Store) UpdateAccountWithTrx(ctx context.Context, sourceAccount *databas
 	}
 	_, err = trx.ExecContext(ctx, "UPDATE account SET balance = $1, last_modified = $2, version = $3 WHERE id = $4 and version = $5", sourceAccount.Balance, sourceAccount.LastModified, sourceAccount.Version+1, sourceAccount.ID, sourceAccount.Version)
 	if err != nil {
-		trx.Rollback()
+		err := trx.Rollback()
+		if err != nil {
+			return err
+		}
 		return err
 	}
 	_, err = trx.ExecContext(ctx, "UPDATE account SET balance = $1, last_modified = $2, version = $3 WHERE id = $4 and version = $5", destinationAccount.Balance, destinationAccount.LastModified, destinationAccount.Version+1, destinationAccount.ID, destinationAccount.Version)
 	fmt.Println(err)
 	if err != nil {
-		trx.Rollback()
+		err := trx.Rollback()
+		if err != nil {
+			return err
+		}
 		return err
 	}
 	err = trx.Commit()

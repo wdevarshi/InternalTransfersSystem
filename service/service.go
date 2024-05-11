@@ -111,7 +111,10 @@ func (s *svc) TransactionSubmission(ctx context.Context, req *proto.TransactionS
 		err = s.store.AddTransaction(ctx, trx)
 		if err != nil {
 			//This should not happen, but if it does, raise an alert from pager
-			notifier.Notify(err)
+			err := notifier.Notify(err)
+			if err != nil {
+				return nil, err
+			}
 			return nil, err
 		}
 		return nil, errors.New(database.ErrorReason_InsufficientBalance)

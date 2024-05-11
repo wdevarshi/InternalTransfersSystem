@@ -67,8 +67,5 @@ func (v *validator) ValidateCreateAccountRequest(request *proto.CreateAccountReq
 }
 
 func containsSpecialCharacters(id string) bool {
-	if strings.ContainsAny(id, " !@#$%^&*()_+=[]{}|;':,.<>?") {
-		return true
-	}
-	return false
+	return strings.ContainsAny(id, " !@#$%^&*()_+=[]{}|;':,.<>?")
 }
