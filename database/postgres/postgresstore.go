@@ -36,11 +36,7 @@ func (s *Store) GetAccount(ctx context.Context, accountID string) (*database.Acc
 	return account, nil
 }
 
-func (s *Store) UpdateAccount(ctx context.Context, account *database.Account) error {
-	_, err := s.DB.Exec("UPDATE account SET balance = $1, last_modified = $2 WHERE id = $3", account.Balance, account.LastModified, account.ID)
-	if err != nil {
-		return err
-	}
+func (s *Store) UpdateAccountWithTrx(ctx context.Context, account *database.Account) error {
 	return nil
 }
 

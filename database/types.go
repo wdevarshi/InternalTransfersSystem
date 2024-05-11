@@ -8,7 +8,7 @@ import (
 type InternalTransferSystemStore interface {
 	CreateAccount(ctx context.Context, account *Account) error
 	GetAccount(ctx context.Context, accountID string) (*Account, error)
-	UpdateAccount(ctx context.Context, account *Account) error
+	UpdateAccountWithTrx(ctx context.Context, account *Account) error
 	AddTransaction(ctx context.Context, transaction *Transaction) error
 	GetAllSourceTransactions(ctx context.Context, sourceAccountId string) ([]*Transaction, error)
 	GetAllDestinationTransactions(ctx context.Context, destinationAccountId string) ([]*Transaction, error)

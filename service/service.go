@@ -50,23 +50,16 @@ func (s *svc) Echo(_ context.Context, req *proto.EchoRequest) (*proto.EchoRespon
 }
 
 func (s *svc) CreateAccount(ctx context.Context, req *proto.CreateAccountRequest) (*proto.CreateAccountResponse, error) {
-	fmt.Println("-0---------------")
-	fmt.Println(req)
-	fmt.Println(s.validator)
 	err := s.validator.ValidateCreateAccountRequest(req)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(err)
-	fmt.Println("-1---------------")
 	err = s.store.CreateAccount(ctx, &database.Account{
 		ID:           req.GetAccountId(),
 		Balance:      req.GetInitialBalance(),
 		TimeCreated:  time.Now(),
 		LastModified: time.Now(),
 	})
-	fmt.Println(err)
-	fmt.Println("-2---------------")
 	if err != nil {
 		return nil, err
 	}
