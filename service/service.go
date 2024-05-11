@@ -84,10 +84,6 @@ func (s *svc) GetAccount(ctx context.Context, req *proto.GetAccountRequest) (*pr
 }
 
 func (s *svc) TransactionSubmission(ctx context.Context, req *proto.TransactionSubmissionRequest) (*proto.TransactionSubmissionResponse, error) {
-	fmt.Println(req.GetFromAccountId())
-	fmt.Println(req.GetToAccountId())
-	fmt.Println(req.GetAmount())
-	fmt.Println("--------------------")
 
 	err := s.validator.ValidateTransactionSubmissionRequest(req)
 	if err != nil {
@@ -120,9 +116,37 @@ func (s *svc) TransactionSubmission(ctx context.Context, req *proto.TransactionS
 		}
 		return nil, errors.New(database.ErrorReason_InsufficientBalance)
 	}
-	//if there is enough balance, create a transaction record
+	//check if destination account exists
+	destinationAccount, err := s.store.GetAccount(ctx, req.GetToAccountId())
+	if err != nil {
+		return nil, err
+	}
+	//if there is enough balance, INIT the transaction
+	err = s.store.AddTransaction(ctx, trx)
+	if err != nil {
+		return nil, err
+	}
+
 	//update the balance of the source and destination accounts
+	err = s.store.UpdateAccountWithTrx(ctx, sourceAccount, destinationAccount)
+	if err != nil {
+		return nil, err
+	}
+
 	//update the status of the transaction to success
+	trx.Status = database.TransactionStatusSuccess
+	err = s.store.UpdateTransaction(ctx, trx)
+	if err != nil {
+		trx.Status = database.TransactionStatusFailed
+		trx.ErrorReason = database.ErrorReason_InternalError
+		err = s.store.AddTransaction(ctx, trx)
+		if err != nil {
+			//This should not happen, but if it does, raise an alert from pager
+			notifier.Notify(err)
+			return nil, err
+		}
+		return nil, err
+	}
 	return &proto.TransactionSubmissionResponse{}, nil
 }
 

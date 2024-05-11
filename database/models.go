@@ -59,6 +59,7 @@ const (
 
 const (
 	ErrorReason_InsufficientBalance = "insufficient balance"
+	ErrorReason_InternalError       = "internal error"
 )
 
 const (

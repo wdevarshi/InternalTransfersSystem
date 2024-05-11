@@ -36,13 +36,40 @@ func (s *Store) GetAccount(ctx context.Context, accountID string) (*database.Acc
 	return account, nil
 }
 
-func (s *Store) UpdateAccountWithTrx(ctx context.Context, account *database.Account) error {
+func (s *Store) UpdateAccountWithTrx(ctx context.Context, sourceAccount *database.Account, destinationAccount *database.Account) error {
+	trx, err := s.DB.Begin()
+	if err != nil {
+		return err
+	}
+	_, err = trx.ExecContext(ctx, "UPDATE account SET balance = $1, last_modified = $2, version = $3 WHERE id = $4 and version = $5", sourceAccount.Balance, sourceAccount.LastModified, sourceAccount.Version+1, sourceAccount.ID, sourceAccount.Version)
+	if err != nil {
+		trx.Rollback()
+		return err
+	}
+	_, err = trx.ExecContext(ctx, "UPDATE account SET balance = $1, last_modified = $2, version = $3 WHERE id = $4 and version = $5", destinationAccount.Balance, destinationAccount.LastModified, destinationAccount.Version+1, destinationAccount.ID, destinationAccount.Version)
+	if err != nil {
+		trx.Rollback()
+		return err
+	}
+	err = trx.Commit()
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 func (s *Store) AddTransaction(ctx context.Context, transaction *database.Transaction) error {
 
 	_, err := s.DB.Exec("INSERT INTO trx_ledger (id, source_account_id, destination_account_id, amount, status, time_created, last_modified, version, error_reason) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)", transaction.ID, transaction.SourceAccountID, transaction.DestinationAccountID, transaction.Amount, transaction.Status, transaction.TimeCreated, transaction.LastModified, transaction.Version, transaction.ErrorReason)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *Store) UpdateTransaction(ctx context.Context, transaction *database.Transaction) error {
+
+	_, err := s.DB.Exec("UPDATE trx_ledger SET status = $1, last_modified = $2, version = $3, error_reason = $4 WHERE id = $5 and version = $6", transaction.Status, transaction.LastModified, transaction.Version+1, transaction.ErrorReason, transaction.ID, transaction.Version)
 	if err != nil {
 		return err
 	}

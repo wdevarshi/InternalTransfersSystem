@@ -11,6 +11,7 @@ var (
 	ErrSpecialCharacters = errors.New("account ID contains special characters")
 	ErrNegativeBalance   = errors.New("initial balance is negative")
 	ErrInvalidRequest    = errors.New("invalid request")
+	ErrSameAccountId     = errors.New("source and destination accounts are same")
 )
 
 type validator struct {
@@ -32,6 +33,9 @@ func (v *validator) ValidateTransactionSubmissionRequest(request *proto.Transact
 	}
 	if request.GetAmount() < 0 {
 		return ErrNegativeBalance
+	}
+	if request.GetFromAccountId() == request.GetToAccountId() {
+		return ErrSameAccountId
 	}
 	return nil
 }
