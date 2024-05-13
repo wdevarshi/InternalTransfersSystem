@@ -53,7 +53,42 @@ This project uses postgresql to store data. For the purpose this demo, create in
 $ docker pull postgres
 $ docker run --name internalTransfersSystem -e POSTGRES_PASSWORD=<> -e POSTGRES_USER=internalTransferSystemUser  -p 5432:5432 -d postgres -v pgdata:/var/lib/postgresql/data
 ```
+Once you have the DB created, you need to create the tables. You can use createDB.sql file to create the tables. You can use the following command to create the tables
 
+```console
+-- This table is primarily used to serve the read requests. The goal of this table is to store the account details.
+CREATE TABLE "account"
+(
+    "id"            uuid                     NOT NULL PRIMARY KEY,
+    "balance"       DOUBLE PRECISION         NOT NULL,
+    "time_created"  timestamp with time zone NOT NULL,
+    "last_modified" timestamp with time zone NOT NULL,
+    "version"       integer                  NOT NULL
+);
+
+create type trx_status as enum (
+  'init',
+  'success',
+  'failed'
+);
+
+-- The goal of this table is to store the transaction details in a ledger. All the transactions will be stored in this table even for the failed transactions.
+CREATE TABLE "trx_ledger"
+(
+    "id"                     uuid                     NOT NULL PRIMARY KEY,
+    "source_account_id"      uuid                     NOT NULL,
+    "destinatio_account_idn" uuid                     NOT NULL,
+    "amount"                 DOUBLE PRECISION         NOT NULL,
+    "status"                 trx_status               NOT NULL,
+    "time_created"           timestamp with time zone NOT NULL,
+    "last_modified"          timestamp with time zone NOT NULL,
+    "version"                integer                  NOT NULL,
+    "error_reason"           text
+);
+
+CREATE INDEX "source_account_idx" on "trx_ledger" ("source_account_id");
+CREATE INDEX "destinatio_account_idnx" on "trx_ledger" ("destinatio_account_idn");
+```
 
 ## Adding a new endpoint to the API
 
@@ -99,6 +134,27 @@ curl --location --request POST 'localhost:9091/api/v1/transaction/create' \
 ### HTTP to gRPC mapping
 
 We use [grpc-gateway] to automatically map HTTP requests to gRPC requests. You can find the mapping in the `proto/myapp.proto` file. This server is generated according to [custom options](https://cloud.google.com/service-infrastructure/docs/service-management/reference/rpc/google.api#http) in your gRPC definition.  You can find more information about the mapping [here](https://grpc-ecosystem.github.io/grpc-gateway/docs/tutorials/adding_annotations/)
+
+### State machine for the Transaction
+
+```console
+    INIT --> SUCCESS
+    INIT --> FAILED
+```
+
+### Future work
+
+1. Add a worker pool to reconcile the transactions not in terminal state
+2. Rate limiter, circuit breaker to prevent the abuse of the system
+3. Add a cache to cache the account details like image URL, name, etc
+4. Create load balancer and service discovery to balance the load 
+5. Add a secret manager to manage the secrets 
+6. A security layer to secure the system 
+7. Add a CI/CD pipeline to automate the deployment 
+8. DB slave to backup the data periodically for audit and disaster recovery 
+9. Add a check for code quality, code smell, bugs, vulnerabilities, etc 
+10. Add a code performance, stress, benchmark, profiling tests 
+11. Include code best practices, Anti-pattern, review guidelines to follow in the readme
 
 ## Application configuration
 
