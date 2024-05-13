@@ -16,9 +16,10 @@ type Config struct {
 	cbConfig.Config
 	PanicOnConfigError bool `envconfig:"PANIC_ON_CONFIG_ERROR" default:"true"`
 	// App configuration
-	// Remove this line and add your own configuration
-	Prefix     string `envconfig:"PREFIX" default:"got"`
-	DBUser     string `envconfig:"DBUser" default:"devarshiwaghela"`
+	Prefix string `envconfig:"PREFIX" default:"got"`
+	DBUser string `envconfig:"DBUser" default:"devarshiwaghela"`
+
+	//TODO: Move this config to vault
 	DBPassword string `envconfig:"DBPassword" default:"waghela"`
 	DBName     string `envconfig:"DBName" default:"internaltransferssystem"`
 }

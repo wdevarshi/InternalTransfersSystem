@@ -47,11 +47,11 @@ To run the image, run:
 $ make docker-run
 ```
 ## How to create DB
-This project uses postgresql to store data. For the purpose this demo, we are using docker container to run with a mounted volume to persist the data.
+This project uses postgresql to store data. For the purpose this demo, create install postgresql and create a database called internalTransfersSystem. Moreover, for production, we prefer to run the postgres in docker with a volume mount to persist data. You can use the following command to create the database
 
 ```console
 $ docker pull postgres
-$ docker run --name internalTransfersSystem -e POSTGRES_PASSWORD=mysecretpassword -e POSTGRES_USER=internalTransferSystemUser  -p 5433:5432 -d postgres -v pgdata:/var/lib/postgresql/data
+$ docker run --name internalTransfersSystem -e POSTGRES_PASSWORD=<> -e POSTGRES_USER=internalTransferSystemUser  -p 5432:5432 -d postgres -v pgdata:/var/lib/postgresql/data
 ```
 
 
@@ -60,6 +60,41 @@ $ docker run --name internalTransfersSystem -e POSTGRES_PASSWORD=mysecretpasswor
 Our service is grpc first. We use [grpc-gateway] to automatically map HTTP requests to gRPC requests. This means that you can add a new endpoint to the API by adding a new rpc to `service InternalTransfersSystem` in `proto/internaltransferssystem.proto` file. Then, you can run `make generate` to generate grpc/http endpoints.
 
 The file `serice/service.go` contains the implementation of the API and serves as the emtrypoint for the app. You can add your business logic there or any other package.
+
+### Current endpoints - CURL
+
+API to create account
+```console
+curl --location --request POST 'localhost:9091/api/v1/account/create' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "account_id" : "12359cc6-6ea6-41a6-9c52-79734acbf191",
+    "initial_balance" : 100.0
+}'
+```
+ 
+API to get account
+```console
+curl --location --request POST 'localhost:9091/api/v1/account/get' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "account_id" : "12359cc6-6ea6-41a6-9c52-79734aabf191"
+
+}'
+```
+
+API to create transaction
+```console
+curl --location --request POST 'localhost:9091/api/v1/transaction/create' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "from_account_id" : "12359cc6-6ea6-41a6-9c52-79734aabf191",
+    "to_account_id" : "12359fcc6-6ea6-41a6-9c52-79734acbf192",
+    "amount" : 20.0
+
+}'
+```
+
 
 ### HTTP to gRPC mapping
 

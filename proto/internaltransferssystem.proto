@@ -103,7 +103,6 @@ service InternalTransfersSystem {
     };
   }
 
-
   rpc GetAccount(GetAccountRequest) returns (GetAccountResponse) {
     option (google.api.http) = {
       post: "/api/v1/account/get"
