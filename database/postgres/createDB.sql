@@ -22,7 +22,7 @@ CREATE TABLE "trx_ledger"
 (
     "id"                     uuid                     NOT NULL PRIMARY KEY,
     "source_account_id"      uuid                     NOT NULL,
-    "destinatio_account_idn" uuid                     NOT NULL,
+    "destination_account_id" uuid                     NOT NULL,
     "amount"                 DOUBLE PRECISION         NOT NULL,
     "status"                 trx_status               NOT NULL,
     "time_created"           timestamp with time zone NOT NULL,
@@ -32,4 +32,4 @@ CREATE TABLE "trx_ledger"
 );
 
 CREATE INDEX "source_account_idx" on "trx_ledger" ("source_account_id");
-CREATE INDEX "destinatio_account_idnx" on "trx_ledger" ("destinatio_account_idn");
+CREATE INDEX "destination_account_idx" on "trx_ledger" ("destination_account_id");
