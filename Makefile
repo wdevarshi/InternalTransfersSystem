@@ -24,6 +24,7 @@ help:
 	@echo '    make build-docker    Build a docker image.'
 	@echo '    make lint            Run linters.'
 	@echo '    make mock            Generate mocks.'
+	@echo '    make clean-docker    Remove images, containers, and volumes.'
 	@echo
 
 build:
@@ -85,3 +86,16 @@ run: build
 
 run-docker: build-docker
 	docker run -p 9091:9091 -p 9090:9090 --env-file local.env ${IMAGE_NAME}:local
+
+clean-docker:
+	@echo "Stopping all running Docker containers..."
+	docker stop $(shell docker ps -aq)
+
+	@echo "Removing all Docker containers..."
+	docker rm $(shell docker ps -aq)
+
+	@echo "Removing all Docker images..."
+	docker rmi $(shell docker images -q)
+
+	@echo "Removing all Docker volumes..."
+	docker volume rm $(shell docker volume ls -q)

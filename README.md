@@ -53,7 +53,7 @@ This project uses postgresql to store data. For the purpose this demo, create in
 $ docker pull postgres
 $ docker run --name internalTransfersSystem -e POSTGRES_PASSWORD=<> -e POSTGRES_USER=internalTransferSystemUser  -p 5432:5432 -d postgres -v pgdata:/var/lib/postgresql/data
 ```
-Once you have the DB created, you need to create the tables. You can use createDB.sql file to create the tables. You can use the following command to create the tables
+Once you have the DB created, you need to create the tables. You can use init.sql file to create the tables. You can use the following command to create the tables
 
 ```console
 -- This table is primarily used to serve the read requests. The goal of this table is to store the account details.

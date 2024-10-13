@@ -1,5 +1,10 @@
 -- jdbc:postgresql://localhost:5432/internaltransferssystem
--- psql postgres
+-- psql -d test_db -U postgres
+-- docker stop $(docker ps -aq)
+-- docker rm $(docker ps -aq)
+-- docker rmi $(docker images -q)
+-- docker volume rm $(docker volume ls -q)
+
 CREATE
 DATABASE internaltransferssystem;
 -- \c internaltransferssystem
@@ -33,3 +38,6 @@ CREATE TABLE "trx_ledger"
 
 CREATE INDEX "source_account_idx" on "trx_ledger" ("source_account_id");
 CREATE INDEX "destination_account_idx" on "trx_ledger" ("destination_account_id");
+
+-- 1. Remove the data and schema created during the testin
+-- 2. Hook in the migration script to create the database and the tables.
