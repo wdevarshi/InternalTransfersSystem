@@ -102,4 +102,5 @@ clean-docker:
 	docker volume rm $(shell docker volume ls -q)
 
 docker-up:
+	make clean-docker
 	docker-compose -f dockercompose.yaml up

@@ -1,5 +1,4 @@
-CREATE
-DATABASE internaltransferssystem;
+CREATE DATABASE internaltransferssystem;
 \c internaltransferssystem
 CREATE TABLE "account"
 (

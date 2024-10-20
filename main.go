@@ -7,6 +7,7 @@ import (
 	"github.com/wdevarshi/InternalTransfersSystem/service/validator"
 	"mime"
 	"net/http"
+	"os"
 
 	"github.com/go-coldbrew/core"
 	"github.com/go-coldbrew/log"
@@ -56,7 +57,7 @@ func (s *cbSvc) InitHTTP(ctx context.Context, mux *runtime.ServeMux, endpoint st
 // If you are using the grpc-gateway, you can use the RegisterMySvcHandlerFromEndpoint function to register the HTTP handlers
 func (s *cbSvc) InitGRPC(ctx context.Context, server *grpc.Server) error {
 
-	dataSourceName := "user=" + config.Get().DBUser + " password=" + config.Get().DBPassword + " dbname=" + config.Get().DBName + " sslmode=disable"
+	dataSourceName := os.Getenv("DATABASE_URL")
 	db, err := sql.Open("postgres", dataSourceName)
 
 	if err != nil {

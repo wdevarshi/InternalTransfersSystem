@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"fmt"
 
 	cbConfig "github.com/go-coldbrew/core/config"
 	"github.com/go-coldbrew/log"
@@ -17,11 +18,6 @@ type Config struct {
 	PanicOnConfigError bool `envconfig:"PANIC_ON_CONFIG_ERROR" default:"true"`
 	// App configuration
 	Prefix string `envconfig:"PREFIX" default:"got"`
-	DBUser string `envconfig:"DBUser" default:"devarshiwaghela"`
-
-	//TODO: Move this config to vault
-	DBPassword string `envconfig:"DBPassword" default:"waghela"`
-	DBName     string `envconfig:"DBName" default:"internaltransferssystem"`
 }
 
 func init() {
