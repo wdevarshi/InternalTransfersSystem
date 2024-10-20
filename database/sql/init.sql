@@ -1,13 +1,6 @@
--- jdbc:postgresql://localhost:5432/internaltransferssystem
--- psql -d test_db -U postgres
--- docker stop $(docker ps -aq)
--- docker rm $(docker ps -aq)
--- docker rmi $(docker images -q)
--- docker volume rm $(docker volume ls -q)
-
 CREATE
 DATABASE internaltransferssystem;
--- \c internaltransferssystem
+\c internaltransferssystem
 CREATE TABLE "account"
 (
     "id"            uuid                     NOT NULL PRIMARY KEY,

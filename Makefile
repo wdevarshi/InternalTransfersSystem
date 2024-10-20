@@ -25,6 +25,7 @@ help:
 	@echo '    make lint            Run linters.'
 	@echo '    make mock            Generate mocks.'
 	@echo '    make clean-docker    Remove images, containers, and volumes.'
+	@echo '    make docker-up    	Run docker-compose.'
 	@echo
 
 build:
@@ -99,3 +100,6 @@ clean-docker:
 
 	@echo "Removing all Docker volumes..."
 	docker volume rm $(shell docker volume ls -q)
+
+docker-up:
+	docker-compose -f dockercompose.yaml up

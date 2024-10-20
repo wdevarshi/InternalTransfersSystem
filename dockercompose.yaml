@@ -27,6 +27,21 @@ services:
         - pgdata:/var/lib/postgresql/data/pgdata
         - ./database/sql:/docker-entrypoint-initdb.d
 
+  internal-transfers-system:
+    container_name: internal_transfers_system
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: "postgres://postgres:root123@db:5432/test_db?sslmode=disable"
+    ports:
+      - "9091:9091"
+      - "9090:9090"
+
+
 volumes:
     pgdata:
         driver: local
