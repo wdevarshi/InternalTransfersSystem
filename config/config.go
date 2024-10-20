@@ -2,8 +2,6 @@ package config
 
 import (
 	"context"
-	"fmt"
-
 	cbConfig "github.com/go-coldbrew/core/config"
 	"github.com/go-coldbrew/log"
 	"github.com/kelseyhightower/envconfig"
